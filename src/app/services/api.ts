@@ -164,12 +164,13 @@ class ApiService {
   private baseURL: string;
 
   constructor() {
+    // Allow empty API_BASE_URL for static-only apps
     if (!API_BASE_URL) {
-      throw new Error(
-        "NEXT_PUBLIC_API_BASE_URL environment variable is required"
+      console.warn(
+        "⚠️ API_BASE_URL not set - running in static mode without backend"
       );
     }
-    this.baseURL = API_BASE_URL;
+    this.baseURL = API_BASE_URL || "";
   }
 
   private getAuthHeaders(): HeadersInit {

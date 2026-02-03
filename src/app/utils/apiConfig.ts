@@ -23,16 +23,17 @@ class ApiConfigManager {
   }
 
   private initializeConfig(): ApiConfig {
-    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "";
     const environment =
       (process.env.NEXT_PUBLIC_APP_ENV as
         | "development"
         | "production"
         | "staging") || "development";
 
+    // Allow empty baseUrl for static-only apps
     if (!baseUrl) {
-      throw new Error(
-        "NEXT_PUBLIC_API_BASE_URL environment variable is required! Check your .env file."
+      console.warn(
+        "⚠️ NEXT_PUBLIC_API_BASE_URL not set - running in static mode without backend"
       );
     }
 
