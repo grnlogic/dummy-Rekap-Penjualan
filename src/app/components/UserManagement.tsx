@@ -31,15 +31,12 @@ export default function UserManagement() {
 
   const loadUsers = async () => {
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/users`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch(`${ENV.API_BASE_URL}/users`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          "Content-Type": "application/json",
+        },
+      });
 
       if (response.ok) {
         const userData = await response.json();
@@ -57,14 +54,14 @@ export default function UserManagement() {
       // Test manual fetch first
       try {
         const manualResponse = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user-activity/online-users`,
+          `${ENV.API_BASE_URL}/api/user-activity/online-users`,
           {
             method: "GET",
             headers: {
               Authorization: `Bearer ${authToken}`,
               "Content-Type": "application/json",
             },
-          }
+          },
         );
 
         if (!manualResponse.ok) {

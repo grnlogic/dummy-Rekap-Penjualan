@@ -1,4 +1,5 @@
 // Secure API Configuration Utility
+import { ENV } from "../config/env";
 
 interface ApiConfig {
   baseUrl: string;
@@ -23,7 +24,7 @@ class ApiConfigManager {
   }
 
   private initializeConfig(): ApiConfig {
-    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "";
+    const baseUrl = ENV.API_BASE_URL;
     const environment =
       (process.env.NEXT_PUBLIC_APP_ENV as
         | "development"

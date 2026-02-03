@@ -1,5 +1,6 @@
 "use client";
 
+import { ENV } from "../config/env";
 import React, {
   createContext,
   useContext,
@@ -103,7 +104,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
           if (!currentToken) {
             debugLog(
-              "❌ No token found during auto refresh, redirecting to login"
+              "❌ No token found during auto refresh, redirecting to login",
             );
             // ✅ REDIRECT KE LOGIN JIKA TOKEN HILANG
             if (!window.location.pathname.includes("/auth/login")) {
@@ -201,7 +202,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
       // --- BYPASS REAL AUTH ---
       // const response = await authService.login(credentials);
-      
+
       const dummyUser = {
         id: 1,
         username: credentials.username || "demo",
@@ -212,7 +213,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       // ✅ SET DUMMY STORAGE
       localStorage.setItem("authToken", "dummy-token-12345");
       localStorage.setItem("currentUser", JSON.stringify(dummyUser));
-      
+
       setUser(dummyUser);
       setIsAuthenticated(true);
 
@@ -252,15 +253,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // ✅ DUMMY AUTH CHECK
   const checkAuthStatus = useCallback(async () => {
-     // In dummy mode, we assume if we have user state, we are good.
-     // No need to ping backend.
-     const currentToken = localStorage.getItem("authToken");
-      if (!currentToken) {
-        setIsAuthenticated(false);
-        setUser(null);
-      } else {
-         setIsAuthenticated(true);
-      }
+    // In dummy mode, we assume if we have user state, we are good.
+    // No need to ping backend.
+    const currentToken = localStorage.getItem("authToken");
+    if (!currentToken) {
+      setIsAuthenticated(false);
+      setUser(null);
+    } else {
+      setIsAuthenticated(true);
+    }
   }, []);
 
   const value: AuthContextType = {

@@ -1,5 +1,6 @@
 "use client";
 
+import { ENV } from "../config/env";
 import { useEffect, useState } from "react";
 import { authService } from "@/app/services/authService";
 import { PageLoader } from "@/app/components/ui/LoadingSpinner";
@@ -36,12 +37,9 @@ const AuthGuard = ({
 
         // 3. Optional: Test with backend
         try {
-          const response = await fetch(
-            `${process.env.NEXT_PUBLIC_API_BASE_URL}/health/status`,
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            }
-          );
+          const response = await fetch(`${ENV.API_BASE_URL}/health/status`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
 
           if (response.status === 401) {
             authService.removeToken();

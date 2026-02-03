@@ -1,4 +1,5 @@
 import { redirectToLogin, checkTokenOrRedirect } from "../utils/authUtils";
+import { ENV } from "../config/env";
 
 interface LoginRequest {
   username: string;
@@ -22,8 +23,7 @@ interface LoginResponse {
 
 class AuthService {
   // ✅ TAMBAHKAN SEMUA PROPERTY YANG KURANG DI SINI
-  private readonly API_BASE =
-    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080/api";
+  private readonly API_BASE = ENV.API_BASE_URL || "http://localhost:8080/api";
   private readonly TOKEN_KEY = "authToken";
   private readonly USER_KEY = "currentUser";
   private readonly SESSION_KEY = "sessionId";
@@ -33,7 +33,7 @@ class AuthService {
 
   // ✅ DEBUG FUNCTION
   private debugLog(message: string, data?: any) {
-    if (process.env.NEXT_PUBLIC_DEBUG_MODE !== "false") {
+    if (ENV.DEBUG_MODE) {
       console.log(`🔧 [AuthService] ${message}`, data || "");
     }
   }

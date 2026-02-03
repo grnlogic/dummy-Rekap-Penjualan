@@ -65,7 +65,7 @@ export default function UsersPage() {
     try {
       setLoading(true);
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/users`,
+        `${ENV.API_BASE_URL}/users`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("authToken")}`,
@@ -90,7 +90,7 @@ export default function UsersPage() {
   const loadOnlineUsers = async () => {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/user-activity/online-users`,
+        `${ENV.API_BASE_URL}/user-activity/online-users`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("authToken")}`,
@@ -126,7 +126,7 @@ export default function UsersPage() {
   const toggleUserStatus = async (userId: number) => {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/users/${userId}/toggle-status`,
+        `${ENV.API_BASE_URL}/users/${userId}/toggle-status`,
         {
           method: "PATCH",
           headers: {
@@ -149,7 +149,7 @@ export default function UsersPage() {
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/users/${userId}/reset-password`,
+        `${ENV.API_BASE_URL}/users/${userId}/reset-password`,
         {
           method: "PATCH",
           headers: {
@@ -176,7 +176,7 @@ export default function UsersPage() {
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/users/${userId}`,
+        `${ENV.API_BASE_URL}/users/${userId}`,
         {
           method: "DELETE",
           headers: {

@@ -1,7 +1,8 @@
 import { ReactNode } from "react";
 import { handleApiError } from "../utils/apiErrorHandler";
+import { ENV } from "../config/env";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+const API_BASE_URL = ENV.API_BASE_URL;
 
 // Interface sesuai dengan struktur backend Java - Fix types for proper display
 export interface PenjualanData {
