@@ -11,9 +11,9 @@ export const metadata: Metadata = {
   title: "PERUSAHAAN - Rekap Penjualan",
   description: "Sistem Rekap Penjualan PERUSAHAAN",
   icons: {
-    icon: "/padud-favicon.png?v=1",
-    shortcut: "/padud-favicon.png?v=1",
-    apple: "/padud-favicon.png?v=1",
+    icon: "/favicon-dummy.svg?v=2",
+    shortcut: "/favicon-dummy.svg?v=2",
+    apple: "/favicon-dummy.svg?v=2",
   },
 };
 
@@ -26,13 +26,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/padud-favicon.png?v=1" type="image/png" />
+        <link rel="icon" href="/favicon-dummy.svg?v=2" type="image/svg+xml" />
         <link
           rel="shortcut icon"
-          href="/padud-favicon.png?v=1"
-          type="image/png"
+          href="/favicon-dummy.svg?v=2"
+          type="image/svg+xml"
         />
-        <link rel="apple-touch-icon" href="/padud-favicon.png?v=1" />
+        <link rel="apple-touch-icon" href="/favicon-dummy.svg?v=2" />
       </head>
       <body className={inter.className}>
         <AuthProvider>
