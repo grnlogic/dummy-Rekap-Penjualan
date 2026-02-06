@@ -274,12 +274,5 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     refreshAuth,
   };
 
-  debugLog("🎯 AuthContext render:", {
-    hasUser: !!user,
-    isAuthenticated,
-    isLoading,
-    username: user?.username,
-  });
-
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

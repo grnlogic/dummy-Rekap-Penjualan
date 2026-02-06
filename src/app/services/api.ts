@@ -231,11 +231,103 @@ class ApiService {
     console.log(`[MOCK API] Intercepting request to: ${endpoint}`);
 
     // Simulate network delay
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 300));
 
-    if (endpoint.includes("/penjualan") && !endpoint.includes("total")) {
-      // Helper to generate dummy data
-      const generateDummyData = () => {
+    const penjualanIdMatch = endpoint.match(/^\/penjualan\/(\d+)$/);
+    if (penjualanIdMatch) {
+      const id = parseInt(penjualanIdMatch[1], 10);
+      const single = {
+        id,
+        tanggal: "2024-01-15",
+        tanggalTransaksi: "2024-01-15",
+        nama_produk: "Kopi Arabika",
+        jumlah: 25,
+        harga_satuan: 15000,
+        total_harga: 375000,
+        kuantitas: 25,
+        jumlahPenjualan: 15000,
+        tipeTransaksi: "PENJUALAN",
+        periode: { id: 1, namaPeriode: "JANUARI 2024" },
+        produk: { id: 1, namaProduk: "Kopi Arabika" },
+        sales: { id: 1, namaSales: "Budi Sales" },
+        jalur: { id: 1, namaJalur: "Retail" },
+      };
+      return single as any;
+    }
+
+    if (endpoint.includes("/penjualan/total-per-minggu-dan-sales")) {
+      return [
+        { id: 1, namaMinggu: "Minggu 1", namaSales: "Budi Sales", totalPenjualan: 2500000, jumlahTransaksi: 12 },
+        { id: 2, namaMinggu: "Minggu 1", namaSales: "Ani Sales", totalPenjualan: 2200000, jumlahTransaksi: 10 },
+        { id: 3, namaMinggu: "Minggu 2", namaSales: "Budi Sales", totalPenjualan: 2800000, jumlahTransaksi: 14 },
+        { id: 4, namaMinggu: "Minggu 2", namaSales: "Ani Sales", totalPenjualan: 2600000, jumlahTransaksi: 11 },
+      ] as any;
+    }
+
+    if (endpoint.includes("/master/jalur")) {
+      return [
+        { id: 1, nama: "Retail", namaJalur: "Retail", nama_jalur: "Retail" },
+        { id: 2, nama: "Internal", namaJalur: "Internal", nama_jalur: "Internal" },
+        { id: 3, nama: "Grosir", namaJalur: "Grosir", nama_jalur: "Grosir" },
+      ] as any;
+    }
+    if (endpoint.includes("/master/minggu")) {
+      return [
+        { id: 1, nama: "Minggu 1", namaMinggu: "Minggu 1", nama_minggu: "Minggu 1" },
+        { id: 2, nama: "Minggu 2", namaMinggu: "Minggu 2", nama_minggu: "Minggu 2" },
+        { id: 3, nama: "Minggu 3", namaMinggu: "Minggu 3", nama_minggu: "Minggu 3" },
+        { id: 4, nama: "Minggu 4", namaMinggu: "Minggu 4", nama_minggu: "Minggu 4" },
+      ] as any;
+    }
+    if (endpoint.includes("/master/hari")) {
+      return [
+        { id: 1, nama: "Senin", namaHari: "Senin", nama_hari: "Senin" },
+        { id: 2, nama: "Selasa", namaHari: "Selasa", nama_hari: "Selasa" },
+        { id: 3, nama: "Rabu", namaHari: "Rabu", nama_hari: "Rabu" },
+        { id: 4, nama: "Kamis", namaHari: "Kamis", nama_hari: "Kamis" },
+        { id: 5, nama: "Jumat", namaHari: "Jumat", nama_hari: "Jumat" },
+        { id: 6, nama: "Sabtu", namaHari: "Sabtu", nama_hari: "Sabtu" },
+      ] as any;
+    }
+    if (endpoint.includes("/master/periode")) {
+      return [
+        { id: 1, nama: "JANUARI 2024", namaPeriode: "JANUARI 2024", nama_periode: "JANUARI 2024" },
+        { id: 2, nama: "FEBRUARI 2024", namaPeriode: "FEBRUARI 2024", nama_periode: "FEBRUARI 2024" },
+        { id: 3, nama: "MARET 2024", namaPeriode: "MARET 2024", nama_periode: "MARET 2024" },
+        { id: 4, nama: "APRIL 2024", namaPeriode: "APRIL 2024", nama_periode: "APRIL 2024" },
+        { id: 5, nama: "MEI 2024", namaPeriode: "MEI 2024", nama_periode: "MEI 2024" },
+        { id: 6, nama: "JUNI 2024", namaPeriode: "JUNI 2024", nama_periode: "JUNI 2024" },
+      ] as any;
+    }
+    if (endpoint.includes("/produk-harga") || endpoint.includes("/produk/")) {
+      const produk = [
+        { id: 1, namaProduk: "Kopi Arabika", nama_produk: "Kopi Arabika" },
+        { id: 2, namaProduk: "Kopi Robusta", nama_produk: "Kopi Robusta" },
+        { id: 3, namaProduk: "Teh Hijau", nama_produk: "Teh Hijau" },
+      ];
+      if (endpoint.includes("/produk-harga/frontend")) {
+        return produk.map((p, i) => ({
+          id: i + 1,
+          produkId: p.id,
+          namaProduk: p.namaProduk,
+          tipeHarga: "STANDAR",
+          tipeHargaDescription: "Harga Standar",
+          harga: [15000, 12000, 8000][i] || 0,
+          hargaFormatted: `Rp ${([15000, 12000, 8000][i] || 0).toLocaleString("id-ID")}`,
+          isActive: true,
+        })) as any;
+      }
+      const idMatch = endpoint.match(/\/(\d+)\/?$/);
+      if (idMatch) return produk.find((p) => p.id === parseInt(idMatch[1], 10)) || produk[0];
+      return produk as any;
+    }
+
+    if (endpoint.includes("/user-activity/online-count")) {
+      return { count: 2, timestamp: new Date().toISOString() } as any;
+    }
+
+    // Helper to generate dummy penjualan list (reusable)
+    const _generateDummyData = () => {
         const data: any[] = [];
         const products = [
           { id: 1, name: "Kopi Arabika", price: 15000 },
@@ -342,7 +434,8 @@ class ApiService {
         return data;
       };
 
-      return generateDummyData() as any;
+    if (endpoint.includes("/penjualan") && !endpoint.includes("total")) {
+      return _generateDummyData() as any;
     }
 
     if (endpoint.includes("/master/produk") || endpoint === "/produk") {

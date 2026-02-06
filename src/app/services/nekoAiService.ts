@@ -4,25 +4,49 @@ import {
   HarmBlockThreshold,
 } from "@google/generative-ai";
 
-interface ChatMessage {
+export interface ChatMessage {
   role: "user" | "assistant";
   content: string;
   timestamp: Date;
 }
 
+// Dummy responses untuk mode tanpa API key (deploy static / Vercel tanpa env)
+const DUMMY_RESPONSES: Record<string, string> = {
+  default:
+    "🐱 Nyaa~ Ini adalah mode demo. NEKO AI siap membantu analisis data penjualan!\n\nBerdasarkan data dummy:\n- Total penjualan menunjukkan tren positif\n- Kopi Arabika & Robusta paling laris\n- Sales Budi dan Ani berkontribusi besar\n\nUntuk analisis AI real-time, set NEXT_PUBLIC_GEMINI_API_KEY di environment.",
+  analisis:
+    "🐱 Berdasarkan data rekap penjualan (dummy):\n- Revenue utama dari Kopi Arabika & Robusta\n- Minggu 2 lebih tinggi dari Minggu 1\n- Rekomendasi: fokus stok untuk produk terlaris",
+  penjualan:
+    "🐱 Data penjualan (demo): total transaksi dan omzet tampil di dashboard. Filter per periode/sales untuk insight lebih detail. Grafik tren dan per produk sudah tersedia.",
+  halo:
+    "🐱 Halo! Saya NEKO AI dalam mode demo. Tanya tentang analisis, penjualan, atau dashboard saja, nyaa~!",
+};
+
+function getDummyResponse(message: string): string {
+  const lower = message.toLowerCase();
+  if (lower.includes("halo") || lower.includes("hi") || lower.includes("hello"))
+    return DUMMY_RESPONSES.halo;
+  if (lower.includes("analisis") || lower.includes("insight")) return DUMMY_RESPONSES.analisis;
+  if (lower.includes("penjualan") || lower.includes("sales") || lower.includes("data"))
+    return DUMMY_RESPONSES.penjualan;
+  return DUMMY_RESPONSES.default;
+}
+
 class NekoAiService {
-  private genAI: GoogleGenerativeAI;
-  private model: any;
+  private genAI: GoogleGenerativeAI | null = null;
+  private model: any = null;
   private chatHistory: ChatMessage[] = [];
+  private dummyMode: boolean = false;
 
   constructor() {
-    const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
-    if (!apiKey) {
-      throw new Error(
-        "GEMINI API KEY tidak ditemukan di environment variables"
-      );
+    const apiKey =
+      typeof process !== "undefined"
+        ? process.env.NEXT_PUBLIC_GEMINI_API_KEY
+        : "";
+    if (!apiKey || apiKey.trim() === "") {
+      this.dummyMode = true;
+      return;
     }
-
     this.genAI = new GoogleGenerativeAI(apiKey);
     this.model = this.genAI.getGenerativeModel({
       model: "gemini-1.5-flash",
@@ -131,6 +155,16 @@ Bisa share data atau aspek spesifik yang ingin dianalisis? Saya siap membantu me
 
   async sendMessage(message: string, dashboardData?: any): Promise<string> {
     try {
+      if (this.dummyMode || !this.model) {
+        await new Promise((r) => setTimeout(r, 600));
+        const reply = getDummyResponse(message);
+        this.chatHistory.push(
+          { role: "user", content: message, timestamp: new Date() },
+          { role: "assistant", content: reply, timestamp: new Date() }
+        );
+        return reply;
+      }
+
       if (!this.isValidQuery(message)) {
         return "Nyaa~ 🐱 Maaf, NEKO AI hanya bisa membantu analisis data PERUSAHAAN. Silakan tanya tentang data penjualan, metrik bisnis, atau insights dashboard ya!";
       }
@@ -1026,6 +1060,7 @@ FOKUS SALES SAAT INI:
 
   // Method untuk test koneksi
   async testConnection(): Promise<boolean> {
+    if (this.dummyMode || !this.model) return true;
     try {
       await this.model.generateContent("Test koneksi NEKO AI");
       return true;
@@ -1036,4 +1071,3 @@ FOKUS SALES SAAT INI:
 }
 
 export const nekoAiService = new NekoAiService();
-export type { ChatMessage };

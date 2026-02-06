@@ -62,19 +62,13 @@ class ApiConfigManager {
     return this.config.environment === "development";
   }
 
-  // Method untuk validasi URL sebelum request
+  // Method untuk validasi URL sebelum request (empty = static/dummy mode, valid)
   public validateApiUrl(): boolean {
     const url = this.config.baseUrl;
-
-    // Validasi format URL
+    if (!url || url.trim() === "") return true;
     try {
       new URL(url);
-
-      // Untuk production, pastikan menggunakan HTTPS
-      if (this.isProduction() && !url.startsWith("https://")) {
-        return false;
-      }
-
+      if (this.isProduction() && !url.startsWith("https://")) return false;
       return true;
     } catch {
       return false;
@@ -88,9 +82,7 @@ export const apiConfig = ApiConfigManager.getInstance();
 // Export helper functions
 export const getApiBaseUrl = (): string => {
   if (!apiConfig.validateApiUrl()) {
-    throw new Error(
-      "Konfigurasi API tidak valid. Periksa environment variable."
-    );
+    return "";
   }
   return apiConfig.getApiBaseUrl();
 };
